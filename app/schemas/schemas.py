@@ -17,14 +17,13 @@ class UserLogin(BaseModel):
 class User(BaseModel):
     id: int
     username: str
+    password: str
     email: EmailStr
     first_name: str
     last_name: str
     created_at: datetime
 
-    class Config:
-        orm_mode = True
-
+    model_config = {"from_attributes": True}
 
 
 class LeadCreate(BaseModel):
@@ -54,15 +53,27 @@ class Lead(BaseModel):
     updated_at: datetime
     activity_count: int = 0
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
+    
+
+class LeadUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    status: Optional[str] = None
+    source: Optional[str] = None
+    budget_min: Optional[int] = None
+    budget_max: Optional[int] = None
+    property_interest: Optional[str] = None
 
 
 class ActivityCreate(BaseModel):
-    activity_type: str            
+    lead_id: int
+    activity_type: str
     title: str
     notes: Optional[str] = None
-    duration: Optional[int] = None 
+    duration: Optional[int] = None
     activity_date: date
 
 class Activity(BaseModel):
@@ -75,10 +86,9 @@ class Activity(BaseModel):
     duration: Optional[int] = None
     activity_date: date
     created_at: datetime
-    user_name: str
+    # user_name: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class DashboardStats(BaseModel):
@@ -88,3 +98,17 @@ class DashboardStats(BaseModel):
     total_activities: int
     leads_by_status: List[Dict[str, Any]]
     recent_activities: List[Activity]  
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    
+
+class ActivityUpdate(BaseModel):
+    lead_id: Optional[int] = None
+    activity_type: Optional[str] = None
+    title: Optional[str] = None
+    notes: Optional[str] = None
+    duration: Optional[int] = None
+    activity_date: Optional[date] = None
